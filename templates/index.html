@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>MLE LV Production Monitoring</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #e6f0fa; /* light blue background */
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            padding: 20px;
+            width: 280px;
+            box-sizing: border-box;
+        }
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+            color: #2c3e50;
+        }
+        .mode-indicator {
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 15px;
+            color: white;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        .mode-Production {
+            background-color: #3498db; /* blue */
+        }
+        .mode-Pause {
+            background-color: #e67e22; /* orange */
+        }
+        .mode-Stock {
+            background-color: #2ecc71; /* green */
+        }
+        .card p {
+            margin: 6px 0;
+            font-size: 0.9em;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 0.85em;
+            color: #555;
+            margin-top: 40px;
+        }
+    </style>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        var socket = io();
+
+        socket.on('connect', function() {
+            console.log('Connected to server via SocketIO');
+        });
+
+        socket.on('new_scan', function(data) {
+            console.log('New scan received for address:', data.address);
+            location.reload();
+        });
+    </script>
+</head>
+<body>
+    <h1>MLE LV Production Monitoring</h1>
+    <div class="cards-container">
+        {% for scanner in scanners %}
+        <div class="card">
+            <h2>{{ scanner.user_name or 'Unknown User' }}</h2>
+            <div class="mode-indicator mode-{{ scanner.mode }}">{{ scanner.mode or '-' }}</div>
+            <p><strong>Address:</strong> {{ scanner.address }}</p>
+            <p><strong>Production Order:</strong> {{ scanner.production_order or '-' }}</p>
+            <p><strong>Operation:</strong> {{ scanner.operation or '-' }}</p>
+            <p><strong>Time Mode Started:</strong> {{ scanner.time_mode_started.strftime('%Y-%m-%d %H:%M:%S') if scanner.time_mode_started else '-' }}</p>
+            <p><strong>Location:</strong> {{ scanner.location or '-' }}</p>
+            <p><strong>Line Number:</strong> {{ scanner.line_no if scanner.line_no is not none else '-' }}</p>
+            <p><strong>Item Number:</strong> {{ scanner.item_no or '-' }}</p>
+            <p><strong>Last Seen:</strong> {{ scanner.last_seen.strftime('%Y-%m-%d %H:%M:%S') if scanner.last_seen else '-' }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    <footer>Designed and Built by Geraint Randall</footer>
+</body>
+</html>

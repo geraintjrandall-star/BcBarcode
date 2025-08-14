@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Management</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 50%; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    th { background-color: #f0f0f0; }
+    a.button { background-color: #4A90E2; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px; }
+    form { display: inline; }
+  </style>
+</head>
+<body>
+  <h1>User Management</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul>
+        {% for category, message in messages %}
+          <li style="color: {% if category == 'error' %}red{% else %}green{% endif %};">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <p><a href="{{ url_for('main.users_add') }}" class="button">Add New User</a></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>User Number</th>
+        <th>Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.user_number }}</td>
+        <td>{{ user.name }}</td>
+        <td>
+          <a href="{{ url_for('main.users_edit', user_number=user.user_number) }}" class="button">Edit</a>
+          <form method="POST" action="{{ url_for('main.users_delete', user_number=user.user_number) }}" onsubmit="return confirm('Delete user {{ user.name }}?');">
+            <button type="submit" style="background:#E74C3C;color:white;border:none;padding:5px 10px;border-radius:3px;cursor:pointer;">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <p><a href="{{ url_for('main.index') }}">Back to Scanner Status</a></p>
+</body>
+</html>

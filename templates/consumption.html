@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Consumption Journal Entries</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f0f0f0; }
+    </style>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.min.js"></script>
+<script>
+  var socket = io();
+
+  socket.on('connect', function() {
+    console.log('Connected to server via SocketIO');
+  });
+
+  socket.on('new_scan', function(data) {
+    console.log('New scan received for address:', data.address);
+    // Reload the page or better: fetch new data via AJAX and update DOM
+    location.reload();
+  });
+</script>
+</head>
+<body>
+    <h1>Consumption Journal Entries</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Production Order</th>
+                <th>Line Number</th>
+                <th>Item Number</th>
+                <th>Bin Code</th>
+                <th>Quantity</th>
+                <th>Posting Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entries %}
+            <tr>
+                <td>{{ entry.id }}</td>
+                <td>{{ entry.production_order_no }}</td>
+                <td>{{ entry.line_no }}</td>
+                <td>{{ entry.item_no }}</td>
+                <td>{{ entry.bin_code }}</td>
+                <td>{{ entry.quantity }}</td>
+                <td>{{ entry.posting_date.strftime('%Y-%m-%d') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ action }} User</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    label { display: block; margin-top: 10px; }
+    input[type=text] { padding: 5px; width: 300px; }
+    button { margin-top: 15px; padding: 7px 15px; background-color: #4A90E2; color: white; border: none; border-radius: 3px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>{{ action }} User</h1>
+
+  <form method="POST">
+    {% if action == 'Add' %}
+    <label>User Number:</label>
+    <input type="text" name="user_number" required />
+    {% else %}
+    <label>User Number:</label>
+    <input type="text" value="{{ user.user_number }}" disabled />
+    {% endif %}
+
+    <label>Name:</label>
+    <input type="text" name="name" value="{{ user.name if user else '' }}" required />
+
+    <button type="submit">{{ action }}</button>
+  </form>
+
+  <p><a href="{{ url_for('main.users_list') }}">Back to Users List</a></p>
+</body>
+</html>

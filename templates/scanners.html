@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Manage Scanners</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #e6f0fa;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        button.delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button.delete-btn:hover {
+            background-color: #c0392b;
+        }
+        .center {
+            text-align: center;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.85em;
+            color: #555;
+        }
+    </style>
+    <script>
+        function deleteScanner(address) {
+            if (confirm(`Are you sure you want to delete scanner ${address}?`)) {
+                fetch(`/scanners/delete/${address}`, {method: 'POST'})
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    if (data.status === 'success') {
+                        // Reload page to reflect changes
+                        window.location.reload();
+                    }
+                })
+                .catch(err => alert('Error deleting scanner: ' + err));
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Manage Scanners</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Address</th>
+                <th>User</th>
+                <th>Production Order</th>
+                <th>Operation</th>
+                <th>Mode</th>
+                <th>Location</th>
+                <th>Line Number</th>
+                <th>Item Number</th>
+                <th>Last Seen</th>
+                <th class="center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for scanner in scanners %}
+            <tr>
+                <td>{{ scanner.address }}</td>
+                <td>{{ scanner.user or '-' }}</td>
+                <td>{{ scanner.production_order or '-' }}</td>
+                <td>{{ scanner.operation or '-' }}</td>
+                <td>{{ scanner.mode or '-' }}</td>
+                <td>{{ scanner.location or '-' }}</td>
+                <td>{{ scanner.line_no if scanner.line_no is not none else '-' }}</td>
+                <td>{{ scanner.item_no or '-' }}</td>
+                <td>{{ scanner.last_seen.strftime('%Y-%m-%d %H:%M:%S') if scanner.last_seen else '-' }}</td>
+                <td class="center">
+                    <button class="delete-btn" onclick="deleteScanner('{{ scanner.address }}')">Delete</button>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="10" style="text-align:center;">No scanners found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <footer>Designed and Built by Geraint Randall</footer>
+</body>
+</html>
