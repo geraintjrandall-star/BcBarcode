@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, flash
-from extensions import db, socketio
-from models import ScannerStatus, ConsumptionJournalEntry, OutputJournalEntry, User
+from app.extensions import db, socketio
+from app.models import ScannerStatus, ConsumptionJournalEntry, OutputJournalEntry, User
 from datetime import datetime
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash

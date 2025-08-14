@@ -1,4 +1,4 @@
-from extensions import db  # import the single shared db instance
+from app.extensions import db  # import the single shared db instance
 
 class ScannerStatus(db.Model):
     __tablename__ = 'scanner_status'
